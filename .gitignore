@@ -5,6 +5,20 @@
 
 .meltano/
 
+# Configuration files with actual credentials (use config.sample.json as template)
+config.json
+
+# Data files with sensitive business information
+*.jsonl
+working_amazon_ads_data.jsonl
+output/
+
+# Test/debug files
+simple_amazon_ads_tap.py
+
+# VS Code settings
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

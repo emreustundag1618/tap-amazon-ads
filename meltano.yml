@@ -1,6 +1,6 @@
 version: 1
 send_anonymous_usage_stats: true
-project_id: "tap-amazon-ads"
+project_id: tap-amazon-ads
 default_environment: test
 venv:
   backend: uv
@@ -8,8 +8,8 @@ environments:
 - name: test
 plugins:
   extractors:
-  - name: "tap-amazon-ads"
-    namespace: "tap_amazon_ads"
+  - name: tap-amazon-ads
+    namespace: tap_amazon_ads
     pip_url: -e .
     capabilities:
     - state
@@ -18,32 +18,93 @@ plugins:
     - about
     - stream-maps
 
-    # TODO: Declare settings and their types here:
-    settings:
-    - name: username
-      label: Username
-      description: The username to use for authentication
+    # Amazon Ads API Settings
+    settings_group_validation:
+    - [client_id, client_secret, refresh_token, profile_ids]
 
-    - name: password
-      kind: password
-      label: Password
-      description: The password to use for authentication
+    # Default configuration values
+    settings:
+    - name: client_id
+      kind: string
+
+      label: Client ID
+      description: Login with Amazon (LWA) Client ID from Security Profile
       sensitive: true
+    - name: client_secret
+      kind: string
+
+      label: Client Secret
+      description: Login with Amazon (LWA) Client Secret from Security Profile
+      sensitive: true
+    - name: refresh_token
+      kind: string
+
+      label: Refresh Token
+      description: OAuth2 refresh token obtained from authorization flow
+      sensitive: true
+    - name: profile_ids
+      kind: array
+
+      label: Profile IDs
+      description: List of Amazon Ads profile IDs to extract data from
+    - name: api_url
+      label: API Base URL
+      description: Amazon Ads API base URL
+
+    - name: auth_endpoint
+      label: OAuth Token Endpoint
+      description: Login with Amazon OAuth2 token endpoint
+
+    - name: permission_scope
+      label: OAuth Permission Scope
+      description: OAuth2 permission scope for Amazon Ads API
 
     - name: start_date
       kind: date_iso8601
       label: Start Date
-      description: Initial date to start extracting data from
+      description: Start date for incremental replication
 
-    # TODO: Declare required settings here:
-    settings_group_validation:
-    - [username, password]
+    - name: user_agent
+      label: User Agent
+      description: User agent string for API requests
 
-    # TODO: Declare default configuration values here:
+    # Required settings validation
     config:
-      start_date: '2010-01-01T00:00:00Z'
+      api_url: https://advertising-api.amazon.com
+      auth_endpoint: https://api.amazon.com/auth/o2/token
+      permission_scope: advertising::campaign_management
+      user_agent: tap-amazon-ads/1.0.0
 
+      profile_ids:
+      - '2253490788537398'
+      - '3740721046509506'
+      - '3980614413780323'
+    select:
+    - adgroups.*
+    - campaigns.*
+    - keywords.*
+    - negative_keywords.*
+    - productads.*
+    - targets.*
   loaders:
   - name: target-jsonl
     variant: andyh1203
     pip_url: target-jsonl
+  - name: target-clickhouse
+    variant: shaped-ai
+    pip_url: git+https://github.com/shaped-ai/target-clickhouse.git
+    capabilities:
+    - about
+    - stream-maps
+    - schema-flattening
+    config:
+      host: host.docker.internal
+      port: 8123
+      username: default
+      database: raw_dev
+      driver: http
+      secure: false
+      sqlalchemy_url: clickhouse+http://default:@host.docker.internal:8123/raw_dev
+      verify: false
+      engine_type: MergeTree
+      load_method: overwrite

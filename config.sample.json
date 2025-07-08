@@ -1,0 +1,22 @@
+{
+  "_comment": "Amazon Ads API Configuration - Replace placeholder values",
+  
+  "client_id": "amzn1.application-oa2-client.YOUR_CLIENT_ID_HERE",
+  "client_secret": "YOUR_CLIENT_SECRET_HERE",
+  "refresh_token": "YOUR_REFRESH_TOKEN_HERE",
+  
+  "_profile_ids_comment": "Profile IDs identify specific advertising accounts/marketplaces",
+  "profile_ids": [
+    "YOUR_PROFILE_ID_1",
+    "YOUR_PROFILE_ID_2"
+  ],
+  
+  "_api_endpoints_comment": "Default Amazon Ads API endpoints (usually don't need to change)",
+  "api_url": "https://advertising-api.amazon.com",
+  "auth_endpoint": "https://api.amazon.com/auth/o2/token",
+  "permission_scope": "advertising::campaign_management",
+  
+  "_optional_settings_comment": "Optional configuration settings",
+  "start_date": "2024-01-01T00:00:00Z",
+  "user_agent": "tap-amazon-ads/1.0.0"
+} 
