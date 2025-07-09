@@ -331,6 +331,72 @@ class TargetsStream(TapAmazonAdsStream):
             }
 
 
+class CampaignBudgetsStream(TapAmazonAdsStream):
+    """Stream for Sponsored Products Campaign Budgets - Child stream of Campaigns."""
+
+    name = "campaign_budgets"
+    path = "/sp/campaigns/budget/usage"
+    primary_keys: t.ClassVar[list[str]] = ["campaignId"]
+    replication_key = None
+    records_jsonpath = "$.success[*]"  # Changed from "$[*]"
+    rest_method = "POST"
+    parent_stream_type = CampaignsStream  # Child stream of campaigns
+
+    schema = th.PropertiesList(
+    th.Property("campaignId", th.StringType, description="The campaign identifier"),
+        th.Property("budget", th.NumberType, description="The campaign budget amount"),
+        th.Property("budgetUsagePercent", th.NumberType, description="Percentage of budget used"),
+        th.Property("usageUpdatedTimestamp", th.StringType, format="date-time", 
+                   description="When the budget usage was last updated"),
+        th.Property("index", th.IntegerType, description="Index of the campaign in the response"),
+    ).to_dict()
+
+    def get_http_headers(self, context: t.Optional[t.Dict] = None) -> dict:
+        """Return the http headers needed for Amazon Ads API."""
+        headers = super().get_http_headers(context)
+        headers["Accept"] = "application/vnd.spCampaignBudget.v3+json"
+        headers["Content-Type"] = "application/vnd.spCampaignBudget.v3+json"
+        return headers
+
+    def prepare_request_payload(
+        self,
+        context: t.Optional[t.Dict],
+        next_page_token: t.Any | None = None,
+    ) -> dict | None:
+        """Prepare the request payload for getting campaign budgets."""
+        campaign_id = context["campaign_id"]
+        return {
+            "campaignIds": [campaign_id]
+        }
+
+    def get_child_context(self, record: dict, context: t.Optional[t.Dict] = None) -> dict:
+        """Return context dictionary for child streams with campaign ID from parent record."""
+        return {
+            "campaign_id": record["campaignId"],
+            "profile_id": context.get("profile_id") if context else None,
+        }
+
+    def parse_response(self, response) -> t.Iterable[dict]:
+        """Parse the response and return an iterator of result rows."""
+        try:
+            data = response.json()
+            self.logger.info(f"Received budget data: {data}")
+            
+            # Process successful responses
+            for record in data.get("success", []):
+                # Add any additional processing if needed
+                yield record
+                
+            # Log any errors
+            for error in data.get("error", []):
+                self.logger.warning(f"Error in budget response: {error}")
+                
+        except Exception as e:
+            self.logger.error(f"Error parsing response: {e}")
+            self.logger.error(f"Response content: {response.text}")
+            raise
+
+
 class NegativeKeywordsStream(TapAmazonAdsStream):
     """Stream for Sponsored Products Negative Keywords - Child stream of Campaigns."""
 
@@ -365,7 +431,7 @@ class NegativeKeywordsStream(TapAmazonAdsStream):
     ) -> dict | None:
         """Prepare the request payload for listing negative keywords filtered by campaign."""
         # If we have a campaign_id from parent context, filter by it
-        if context and context.get("campaign_id"):
+        if context and "campaign_id" in context:
             return {
                 "campaignIdFilter": {
                     "include": [context["campaign_id"]]

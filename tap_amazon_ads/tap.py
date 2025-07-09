@@ -96,6 +96,7 @@ class TapTapAmazonAds(Tap):
             streams.ProductAdsStream(self),
             streams.TargetsStream(self),
             streams.NegativeKeywordsStream(self),
+            streams.CampaignBudgetsStream(self),
         ]
 
 

@@ -80,8 +80,9 @@ plugins:
       - '3740721046509506'
       - '3980614413780323'
     select:
-    - adgroups.*
     - campaigns.*
+    - campaign_budgets.*
+    - adgroups.*
     - keywords.*
     - negative_keywords.*
     - productads.*
