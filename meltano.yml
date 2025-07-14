@@ -87,6 +87,10 @@ plugins:
     - negative_keywords.*
     - productads.*
     - targets.*
+    # - campaign_performance_report.*
+    # - advertised_product_report.*
+    # - sd_advertised_product_report.*
+    # - keywords_targeting_summary_report.*
   loaders:
   - name: target-jsonl
     variant: andyh1203

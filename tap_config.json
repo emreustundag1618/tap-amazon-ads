@@ -1,0 +1,7 @@
+{
+  "client_id": "your_client_id",
+  "client_secret": "your_client_secret",
+  "refresh_token": "your_refresh_token",
+  "profile_ids": ["profile1"],
+  "start_date": "2023-01-01T00:00:00Z"
+}

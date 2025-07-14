@@ -1,0 +1,42 @@
+{
+  "streams": [
+    {
+      "stream": "campaign_performance_report",
+      "tap_stream_id": "campaign_performance_report",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {"type": ["string", "null"]},
+          "campaignName": {"type": ["string", "null"]},
+          "impressions": {"type": ["integer", "null"]},
+          "clicks": {"type": ["integer", "null"]},
+          "cost": {"type": ["number", "null"]},
+          "purchases1d": {"type": ["integer", "null"]},
+          "purchases7d": {"type": ["integer", "null"]},
+          "purchases14d": {"type": ["integer", "null"]},
+          "purchases30d": {"type": ["integer", "null"]},
+          "date": {"type": ["string", "null"], "format": "date"}
+        }
+      },
+      "metadata": [
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "table-key-properties": ["campaignId", "date"],
+            "selected": true,
+            "replication-method": "INCREMENTAL",
+            "replication-key": "date"
+          }
+        },
+        {
+          "breadcrumb": ["properties", "campaignId"],
+          "metadata": {"inclusion": "automatic"}
+        },
+        {
+          "breadcrumb": ["properties", "date"],
+          "metadata": {"inclusion": "automatic"}
+        }
+      ]
+    }
+  ]
+}

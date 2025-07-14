@@ -6,7 +6,25 @@ from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
 # TODO: Import your custom stream types here:
-from tap_amazon_ads import streams
+from tap_amazon_ads import streams  # base logic
+from tap_amazon_ads.all_streams import (
+    CampaignsStream,
+    AdGroupsStream,
+    KeywordsStream,
+    TargetsStream,
+    NegativeKeywordsStream,
+    ProductAdsStream,
+    CampaignBudgetsStream,
+    CampaignPerformanceReportStream,
+    AdvertisedProductReportStream,
+    SponsoredDisplayAdvertisedProductReportStream,
+    KeywordsTargetingSummaryReportStream,
+)
+from tap_amazon_ads.all_streams import (
+    AdvertisedProductReportStream,
+    SponsoredDisplayAdvertisedProductReportStream,
+    KeywordsTargetingSummaryReportStream,
+)
 
 
 class TapTapAmazonAds(Tap):
@@ -89,15 +107,23 @@ class TapTapAmazonAds(Tap):
         Returns:
             A list of discovered streams.
         """
-        return [
-            streams.CampaignsStream(self),
-            streams.AdGroupsStream(self),
-            streams.KeywordsStream(self),
-            streams.ProductAdsStream(self),
-            streams.TargetsStream(self),
-            streams.NegativeKeywordsStream(self),
-            streams.CampaignBudgetsStream(self),
+        streams_list = [
+            # Entity/Base streams
+            CampaignsStream,
+            AdGroupsStream,
+            KeywordsStream,
+            TargetsStream,
+            NegativeKeywordsStream,
+            ProductAdsStream,
+            CampaignBudgetsStream,
+            # Reports
+            CampaignPerformanceReportStream,
+            AdvertisedProductReportStream,
+            SponsoredDisplayAdvertisedProductReportStream,
+            KeywordsTargetingSummaryReportStream,
         ]
+
+        return [stream(self) for stream in streams_list]
 
 
 if __name__ == "__main__":
