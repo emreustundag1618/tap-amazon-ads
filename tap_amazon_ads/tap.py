@@ -5,8 +5,8 @@ from __future__ import annotations
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
 
-# TODO: Import your custom stream types here:
-from tap_amazon_ads import streams  # base logic
+# Base stream class for type annotations
+from tap_amazon_ads.client import TapAmazonAdsStream
 from tap_amazon_ads.all_streams import (
     CampaignsStream,
     AdGroupsStream,
@@ -16,11 +16,6 @@ from tap_amazon_ads.all_streams import (
     ProductAdsStream,
     CampaignBudgetsStream,
     CampaignPerformanceReportStream,
-    AdvertisedProductReportStream,
-    SponsoredDisplayAdvertisedProductReportStream,
-    KeywordsTargetingSummaryReportStream,
-)
-from tap_amazon_ads.all_streams import (
     AdvertisedProductReportStream,
     SponsoredDisplayAdvertisedProductReportStream,
     KeywordsTargetingSummaryReportStream,
@@ -101,7 +96,7 @@ class TapTapAmazonAds(Tap):
         ),
     ).to_dict()
 
-    def discover_streams(self) -> list[streams.TapAmazonAdsStream]:
+    def discover_streams(self) -> list[TapAmazonAdsStream]:
         """Return a list of discovered streams.
 
         Returns:
