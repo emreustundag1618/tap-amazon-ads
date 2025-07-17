@@ -11,7 +11,7 @@ import json
 import random
 import re
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import typing as t
 
 import requests
@@ -226,7 +226,7 @@ class CampaignPerformanceReportStream(TapAmazonAdsStream):
                     try:
                         auth = self.authenticator
                         if getattr(auth, "expires_in", None) and getattr(auth, "last_refreshed", None):
-                            if datetime.now(datetime.timezone.utc) >= auth.last_refreshed + timedelta(seconds=auth.expires_in - 300):
+                            if datetime.now(timezone.utc) >= auth.last_refreshed + timedelta(seconds=auth.expires_in - 300):
                                 self.logger.info("Refreshing access token before expiry")
                                 auth.update_access_token()
                     except Exception as token_exc:
@@ -299,8 +299,33 @@ class CampaignPerformanceReportStream(TapAmazonAdsStream):
             raise
 
     def _parse_report_data(self, report_data: dict) -> t.Iterable[dict]:
-        """Parse the downloaded report JSON into stream records."""
+        """Parse the downloaded report JSON into stream records.
+
+        When using an append-only loading strategy we still fetch a 30-day window
+        from the API each run.  To avoid sending the same data multiple times we
+        compare each record's `date` (the replication key) to the currently
+        stored state bookmark and only emit rows with a strictly newer date.
+        """
+        # Obtain the current bookmark (may be ``None`` on first run).
+        bookmark_value: str | None = self.get_starting_replication_key_value(None)
+        bookmark_date: datetime.date | None = None
+        if bookmark_value:
+            try:
+                bookmark_date = datetime.strptime(bookmark_value, "%Y-%m-%d").date()
+            except Exception:
+                self.logger.debug("Unable to parse bookmark value '%s'", bookmark_value)
+
         for record in report_data.get("reports", []):
+            # Skip rows that are not newer than the bookmark.
+            record_date_str = record.get("date")
+            if bookmark_date and record_date_str:
+                try:
+                    record_date = datetime.strptime(record_date_str, "%Y-%m-%d").date()
+                    if record_date <= bookmark_date:
+                        continue  # Duplicate or already processed
+                except Exception:
+                    # If the date cannot be parsed, fall through and process the row
+                    pass
             parsed_record: dict = {}
             for field, prop in self.schema["properties"].items():
                 value = record.get(field)

@@ -80,15 +80,15 @@ plugins:
       - '3740721046509506'
       - '3980614413780323'
     select:
-    - campaigns.*
-    - campaign_budgets.*
-    - adgroups.*
-    - keywords.*
-    - negative_keywords.*
-    - productads.*
-    - targets.*
+    # - campaigns.*
+    # - campaign_budgets.*
+    # - adgroups.*
+    # - keywords.*
+    # - negative_keywords.*
+    # - productads.*
+    # - targets.*
+    - advertised_product_report.*
     # - campaign_performance_report.*
-    # - advertised_product_report.*
     # - sd_advertised_product_report.*
     # - keywords_targeting_summary_report.*
   loaders:
@@ -111,5 +111,4 @@ plugins:
       secure: false
       sqlalchemy_url: clickhouse+http://default:@host.docker.internal:8123/raw_dev
       verify: false
-      engine_type: MergeTree
-      load_method: overwrite
+      load_method: append-only
