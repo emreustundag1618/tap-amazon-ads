@@ -17,6 +17,8 @@ class SponsoredDisplayAdvertisedProductReportStream(CampaignPerformanceReportStr
     """Stream for Sponsored Display Advertised Product (Daily) reports."""
 
     name = "sd_advertised_product_report"
+    primary_keys: t.ClassVar[list[str]] = ["date", "campaignId", "adGroupId", "adId", "promotedAsin"]
+    replication_key = "date"
 
     # Report API specifics
     report_type = "sdAdvertisedProduct"
