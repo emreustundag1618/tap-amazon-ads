@@ -18,11 +18,11 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
 
     name = "keywords_targeting_summary_report"
 
-    # This summary report does not have a per-record date column, so disable incremental replication
-    replication_key = None
+    # Incremental replication based on daily date column
+    replication_key = "date"
 
     # Use campaignId and targeting as composite primary keys (no date field)
-    primary_keys: t.ClassVar[list[str]] = ["campaignId", "targeting"]
+    primary_keys: t.ClassVar[list[str]] = ["date", "campaignId", "targeting"]
 
     # Report API specifics
     report_type = "spTargeting"
@@ -31,6 +31,7 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
 
     # Columns requested (per payload example)
     report_metrics = [
+        "date",
         # Performance metrics
         "impressions",
         "clicks",
@@ -73,8 +74,6 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
         "keywordId",
         "keyword",
         "campaignBudgetCurrencyCode",
-        "startDate",
-        "endDate",
         "portfolioId",
         "campaignName",
         "campaignId",
@@ -90,8 +89,8 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
         "adKeywordStatus",
     ]
 
-    # Time unit SUMMARY instead of DAILY
-    time_unit = "SUMMARY"
+    # Time unit set to DAILY to get per-day records
+    time_unit = "DAILY"
     lookback_days = 30
 
     # Build JSON schema with type inference
@@ -99,6 +98,7 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
         "type": "object",
         "properties": {
             # Numeric metrics (integer or number depending on monetary)
+            "date": {"type": ["string", "null"], "format": "date"},
             "impressions": {"type": ["integer", "null"]},
             "clicks": {"type": ["integer", "null"]},
             "costPerClick": {"type": ["number", "null"]},
@@ -156,7 +156,7 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
             "targeting": {"type": ["string", "null"]},
             "adKeywordStatus": {"type": ["string", "null"]},
         },
-        "required": ["campaignId", "targeting"],
+        "required": ["campaignId", "targeting", "date"],
     }
 
     # ------------------------------------------------------------
