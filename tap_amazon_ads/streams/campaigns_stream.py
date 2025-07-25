@@ -2,7 +2,7 @@
 
 Contains the concrete implementation of `CampaignsStream`, moved from
 `tap_amazon_ads.streams` to this dedicated module under the
-`t ap_amazon_ads.all_streams` package.
+`tap_amazon_ads.streams` package.
 """
 
 from __future__ import annotations

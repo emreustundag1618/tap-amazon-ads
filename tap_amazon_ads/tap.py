@@ -7,7 +7,7 @@ from singer_sdk import typing as th  # JSON schema typing helpers
 
 # Base stream class for type annotations
 from tap_amazon_ads.client import TapAmazonAdsStream
-from tap_amazon_ads.all_streams import (
+from tap_amazon_ads.streams import (
     CampaignsStream,
     AdGroupsStream,
     KeywordsStream,
@@ -16,6 +16,7 @@ from tap_amazon_ads.all_streams import (
     ProductAdsStream,
     CampaignBudgetsStream,
     CampaignPerformanceReportStream,
+    SearchTermsReportStream,
     AdvertisedProductReportStream,
     SponsoredDisplayAdvertisedProductReportStream,
     KeywordsTargetingSummaryReportStream,
@@ -113,6 +114,7 @@ class TapTapAmazonAds(Tap):
             CampaignBudgetsStream,
             # Reports
             CampaignPerformanceReportStream,
+            SearchTermsReportStream,
             AdvertisedProductReportStream,
             SponsoredDisplayAdvertisedProductReportStream,
             KeywordsTargetingSummaryReportStream,

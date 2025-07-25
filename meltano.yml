@@ -90,7 +90,8 @@ plugins:
     # - advertised_product_report.*
     # - campaign_performance_report.*
     # - sd_advertised_product_report.*
-    - keywords_targeting_summary_report.*
+    # - keywords_targeting_summary_report.*
+    - search_terms_report.*
   loaders:
   - name: target-jsonl
     variant: andyh1203

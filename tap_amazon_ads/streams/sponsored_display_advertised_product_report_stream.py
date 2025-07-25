@@ -1,6 +1,6 @@
 """Sponsored Display Advertised Product Daily Report stream.
 
-Concrete implementation migrated into the `all_streams` package to avoid the
+Concrete implementation migrated into the `streams` package to avoid the
 circular import that occurs when referencing the aggregation module.
 """
 

@@ -9,7 +9,7 @@ import typing as t
 from singer_sdk import typing as th
 
 from tap_amazon_ads.client import TapAmazonAdsStream
-from tap_amazon_ads.all_streams.campaigns_stream import CampaignsStream
+from tap_amazon_ads.streams.campaigns_stream import CampaignsStream
 
 
 class KeywordsStream(TapAmazonAdsStream):
