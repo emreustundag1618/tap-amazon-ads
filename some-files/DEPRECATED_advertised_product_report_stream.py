@@ -76,7 +76,7 @@ class AdvertisedProductReportStream(CampaignPerformanceReportStream):
 
     # Standard settings – reuse parent defaults
     time_unit = "DAILY"
-    lookback_days = 30
+    lookback_days = 60
 
     # Build JSON schema for the metrics above (types inferred)
     schema: dict = {

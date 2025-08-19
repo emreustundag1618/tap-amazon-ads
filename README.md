@@ -53,7 +53,7 @@ You'll need to obtain these from Amazon Ads API:
 
 ```bash
 # Add the custom tap to your meltano.yml
-meltano add extractor tap-amazon-ads --custom
+docker run -v ${pwd}:/projects -w /projects meltano/meltano add extractor tap-amazon-ads --custom
 ```
 
 2. **Configure in `meltano.yml`:**
@@ -108,20 +108,20 @@ extractors:
 
 ```bash
 # Set your Amazon Ads API credentials
-meltano config tap-amazon-ads set client_id "your_client_id"
-meltano config tap-amazon-ads set client_secret "your_client_secret"  
-meltano config tap-amazon-ads set refresh_token "your_refresh_token"
-meltano config tap-amazon-ads set profile_ids '["profile_id_1", "profile_id_2"]'
+docker run -v ${pwd}:/projects -w /projects meltano/meltano config tap-amazon-ads set client_id "your_client_id"
+docker run -v ${pwd}:/projects -w /projects meltano/meltano config tap-amazon-ads set client_secret "your_client_secret"  
+docker run -v ${pwd}:/projects -w /projects meltano/meltano config tap-amazon-ads set refresh_token "your_refresh_token"
+docker run -v ${pwd}:/projects -w /projects meltano/meltano config tap-amazon-ads set profile_ids '["profile_id_1", "profile_id_2"]'
 ```
 
 4. **Test the configuration:**
 
 ```bash
 # Test connection and discover streams
-meltano invoke tap-amazon-ads --discover
+docker run -v ${pwd}:/projects -w /projects meltano/meltano invoke tap-amazon-ads --discover
 
 # Test extraction
-meltano invoke tap-amazon-ads --config=config.json | head -20
+docker run -v ${pwd}:/projects -w /projects meltano/meltano invoke tap-amazon-ads --config=config.json | head -20
 ```
 
 ### Option 2: Standalone Installation
@@ -182,26 +182,26 @@ tap-amazon-ads --config=config.json --catalog=catalog.json
 
 ```bash
 # Select specific streams and fields
-meltano select tap-amazon-ads campaigns.* keywords.keywordId keywords.keywordText keywords.bid
+docker run -v ${pwd}:/projects -w /projects meltano/meltano select tap-amazon-ads campaigns.* keywords.keywordId keywords.keywordText keywords.bid
 
 # Run full pipeline to load into your target
-meltano run tap-amazon-ads target-postgres
+docker run -v ${pwd}:/projects -w /projects meltano/meltano run tap-amazon-ads target-postgres
 
 # Run with specific date range
-meltano run tap-amazon-ads target-postgres --start-date=2024-01-01
+docker run -v ${pwd}:/projects -w /projects meltano/meltano run tap-amazon-ads target-postgres --start-date=2024-01-01
 ```
 
 ### Advanced Stream Selection
 
 ```bash
 # Select campaigns and their related keywords only
-meltano select tap-amazon-ads campaigns.* keywords.*
+docker run -v ${pwd}:/projects -w /projects meltano/meltano select tap-amazon-ads campaigns.* keywords.*
 
 # Include product targeting data
-meltano select tap-amazon-ads campaigns.* targets.* negative_keywords.*
+docker run -v ${pwd}:/projects -w /projects meltano/meltano select tap-amazon-ads campaigns.* targets.* negative_keywords.*
 
 # Full data extraction
-meltano select tap-amazon-ads "*.*"
+docker run -v ${pwd}:/projects -w /projects meltano/meltano select tap-amazon-ads "*.*"
 ```
 
 ## Stream Relationships

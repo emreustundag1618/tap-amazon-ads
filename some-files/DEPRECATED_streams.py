@@ -523,7 +523,7 @@ class CampaignPerformanceReportStream(TapAmazonAdsStream):
     time_unit = "DAILY"
 
     # Number of days to look back for initial sync
-    lookback_days = 30
+    lookback_days = 60
 
     schema = {
         "type": "object",

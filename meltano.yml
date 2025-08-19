@@ -84,14 +84,14 @@ plugins:
     # - campaign_budgets.*
     # - adgroups.*
     # - keywords.*
-    # - negative_keywords.*
+    - negative_keywords.*
     # - productads.*
     # - targets.*
     # - advertised_product_report.*
     # - campaign_performance_report.*
     # - sd_advertised_product_report.*
     # - keywords_targeting_summary_report.*
-    - search_terms_report.*
+    # - search_terms_report.*
   loaders:
   - name: target-jsonl
     variant: andyh1203
@@ -112,4 +112,4 @@ plugins:
       secure: false
       sqlalchemy_url: clickhouse+http://default:@host.docker.internal:8123/raw_dev
       verify: false
-      load_method: append-only
+      load_method: overwrite

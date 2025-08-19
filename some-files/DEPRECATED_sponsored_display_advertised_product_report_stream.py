@@ -79,7 +79,7 @@ class SponsoredDisplayAdvertisedProductReportStream(CampaignPerformanceReportStr
 
     # Standard settings – reuse parent defaults
     time_unit = "DAILY"
-    lookback_days = 30
+    lookback_days = 60
 
     # Build JSON schema
     schema: dict = {

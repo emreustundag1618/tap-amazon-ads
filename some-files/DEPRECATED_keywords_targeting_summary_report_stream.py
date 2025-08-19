@@ -88,7 +88,7 @@ class KeywordsTargetingSummaryReportStream(CampaignPerformanceReportStream):
 
     # Time unit SUMMARY instead of DAILY
     time_unit = "SUMMARY"
-    lookback_days = 30
+    lookback_days = 60
 
     # Build JSON schema with type inference
     schema: dict = {

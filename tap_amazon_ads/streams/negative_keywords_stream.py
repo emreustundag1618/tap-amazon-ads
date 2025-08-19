@@ -39,17 +39,25 @@ class NegativeKeywordsStream(TapAmazonAdsStream):
         return headers
 
     def prepare_request_payload(self, context: t.Optional[t.Dict], next_page_token: t.Any | None = None) -> dict | None:
+        payload = {}
+        
+        # Handle pagination with nextToken
+        if next_page_token:
+            payload["nextToken"] = next_page_token
+            
         if context and "campaign_id" in context:
-            return {
+            payload.update({
                 "campaignIdFilter": {"include": [context["campaign_id"]]},
                 "stateFilter": {"include": ["ENABLED", "PAUSED", "ARCHIVED"]},
                 "maxResults": 100,
-            }
+            })
         else:
-            return {
+            payload.update({
                 "stateFilter": {"include": ["ENABLED", "PAUSED", "ARCHIVED"]},
                 "maxResults": 100,
-            }
+            })
+            
+        return payload
 
 
 __all__ = ["NegativeKeywordsStream"]
